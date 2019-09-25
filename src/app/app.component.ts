@@ -16,26 +16,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
   currentPage: number = 1;
   news: Array<any> = [];
+  scrollCallback;
 
   constructor(
     private scrollService: ScrollService,
     private hackerNewsService: HackerNewsService
-  ) {}
+  ) {
+    this.scrollCallback = this.getStories.bind(this);
+  }
 
+  // DONOT DELETE THIS COMMENTED CODE
   ngOnInit() {
     // Handle scroll event on containing dialog so we can load more results if necessary
-    this.scrollService.onScrolledDown$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.fetchMoreItems());
-
-    this.getStories().subscribe();
+    // this.scrollService.onScrolledDown$
+    //   .pipe(takeUntil(this.ngUnsubscribe))
+    //   .subscribe(() => this.fetchMoreItems());
   }
 
-  private fetchMoreItems() {
-    // add more items
-    this.itemCount += 10;
-    this.getStories().subscribe();
-  }
+  // private fetchMoreItems() {
+  //   // add more items
+  //   this.itemCount += 10;
+  // }
 
   getStories() {
     return this.hackerNewsService.getLatestStories(this.currentPage).pipe(
@@ -49,7 +50,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private processData = news => {
     this.currentPage++;
-    console.log(news);
     this.news = this.news.concat(news);
   };
 
